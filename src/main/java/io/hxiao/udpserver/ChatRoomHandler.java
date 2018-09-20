@@ -21,6 +21,8 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<DatagramPacket>
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
+        System.out.println(ctx.channel().localAddress());
+        System.out.println(ctx.channel().remoteAddress());
     }
 
     @Override
@@ -30,7 +32,6 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<DatagramPacket>
         System.out.println(packet.sender());
         DatagramPacket resp = new DatagramPacket(Unpooled.copiedBuffer("hello " + msg, CharsetUtil.UTF_8), packet.sender());
 
-        Thread.sleep(3000);
         ctx.writeAndFlush(resp);
     }
 
