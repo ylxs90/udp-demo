@@ -1,0 +1,33 @@
+apply plugin: 'java'
+apply plugin: 'application'
+mainClassName = "io.hxiao.udpserver.UDPServer"
+
+
+repositories {
+    mavenLocal()
+    try {
+        Inet4Address.getByName("mirrors.tencentyun.com")
+        maven { url "http://mirrors.tencentyun.com/nexus/repository/maven-public/" }
+        println "use tencentyun mirror"
+    } catch (Exception e) {
+        e.toString()
+        println "mirrors.tencentyun.com cannot connect, use maven central"
+        mavenCentral()
+    }
+}
+dependencies {
+    // https://mvnrepository.com/artifact/io.netty/netty-all
+    compile group: 'io.netty', name: 'netty-all', version: '4.1.29.Final'
+    testCompile "junit:junit:4.12"
+
+}
+
+task fatJar(type: Jar) {
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+    manifest {
+
+        attributes 'Main-Class': 'io.hxiao.udpserver.UDPServer'
+    }
+}
